@@ -29,6 +29,11 @@ class GetRevenue(APIView):
                         cursor.execute(GET_REVENUE, [yesterday_start, yesterday_end])
                         revenue_yesterday = cursor.fetchone()[0] or 0
 
+                    if data_type == '1':
+                        cursor.execute(GET_INVENTORY_EXPIRY_DATE, [today_start, today_end])
+                        revenue_today = cursor.fetchone()[0] or 0
+                        revenue_yesterday = 0
+
                 return Response({
                     "status": "1",
                     "response": {
@@ -46,6 +51,9 @@ class GetRevenue(APIView):
                 last_month_start = first_day_last_month
                 last_month_end = datetime(last_day_last_month.year, last_day_last_month.month, last_day_last_month.day, 23, 59, 59, 59)
 
+                first_day_next_month = datetime(now.year, now.month + 1, 1) if now.month < 12 else datetime(now.year + 1, 1, 1)
+                last_day_of_month = first_day_next_month - timedelta(days=1)
+
                 with connection.cursor() as cursor:
                     if data_type == '0':
                         cursor.execute(GET_REVENUE, [this_month_start, this_month_end])
@@ -53,6 +61,11 @@ class GetRevenue(APIView):
 
                         cursor.execute(GET_REVENUE, [last_month_start, last_month_end])
                         revenue_last_month = cursor.fetchone()[0] or 0
+
+                    if data_type == '1':
+                        cursor.execute(GET_INVENTORY_EXPIRY_DATE, [now, last_day_of_month])
+                        revenue_this_month = cursor.fetchone()[0] or 0
+                        revenue_last_month = 0
 
                 return Response({
                     "status": "1",

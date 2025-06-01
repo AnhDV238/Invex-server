@@ -14,7 +14,6 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     cost_price = models.DecimalField(max_digits=10, decimal_places=2)
     discount_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    inventory_quantity = models.IntegerField(default=0)
     low_stock_threshold = models.IntegerField(default=5)
     unit = models.CharField(max_length=50, default='cái')
     is_active = models.BooleanField(default=True)
